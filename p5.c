@@ -1,45 +1,40 @@
 #include<stdio.h>
-#include<sys/types.h>
-#include<sys/stat.h>
-#include<time.h>
-#include<stdlib.h>
-
-int main(int argc, char *argv[])
+int a[20][20],reach[20],n;
+void dfs(int v)
 {
-struct stat sb;
-if(argc!=2)
+int i;
+reach[v]=1;
+for (i=1;i<=n;i++)
+if(a[v][i] && !reach[i])
 {
-fprintf(stderr,"usage: %s <pathname>\n", argv[0]);
-exit(EXIT_FAILURE);
+printf("\n %d->%d",v,i);
+dfs(i);
 }
-if(stat(argv[1],&sb)==-1)
-{
-perror("stat");
-exit(EXIT_FAILURE);
 }
-
-printf("file type:          ");
-switch(sb.st_mode & S_IFMT)
+void main()
 {
-case S_IFBLK: printf("block device file\n");  
-	      break;
-case S_IFCHR: printf("character device file\n");  
-	      break;
-case S_IFDIR: printf("directory\n");  
-	      break;
-case S_IFIFO: printf("FIFO/pipe\n");  
-	      break;
-case S_IFLNK: printf("symlink\n");  
-	      break;
-case S_IFREG: printf("regular file\n");  
-	      break;
-case S_IFSOCK: printf("socket\n");  
-	       break;
-default:       printf("regular file\n");  
-	       break;
+int i,j,v,count=0;
+printf("\n Enter number of vertices:");
+scanf("%d",&n);
+for (i=1;i<=n;i++)
+{
+reach[i]=0;
+for (j=1;j<=n;j++)
+a[i][j]=0;
 }
-printf("Inode number:   %ld\n", (long) sb.st_ino);
-printf("Mode:   %lo(octal)\n", (unsigned long) sb.st_mode);	
-printf("Blocks allocated:   %lld\n", (long long) sb.st_blocks);
-exit(EXIT_SUCCESS);
+printf("\n Enter the adjacency matrix:\n");
+for (i=1;i<=n;i++)
+for (j=1;j<=n;j++)
+scanf("%d",&a[i][j]);
+printf("Enter the source vertex:\n");
+scanf("%d",&v);
+dfs(v);
+printf("\n");
+for (i=1;i<=n;i++)
+if(reach[i])
+count++;
+if(count==n)
+printf("\n Graph is connected");
+else
+printf("\n Graph is not connected");
 }
